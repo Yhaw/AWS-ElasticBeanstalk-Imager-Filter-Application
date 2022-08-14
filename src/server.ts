@@ -13,6 +13,8 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
+
+
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
   // endpoint to filter an image from a public url.
@@ -30,6 +32,30 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  app.get("/filteredimage", async(req:express.Request,res:express.Response) =>{
+    let{image_url} = req.query;
+    console.log(image_url)
+
+    if(!image_url){
+      res.status(400).send('ERROR => NO URL FOUND');
+    }
+    else
+      {
+        await filterImageFromURL(image_url).then(
+          function(image_filtered_path){
+            res.sendFile(image_filtered_path,
+              () => {
+                deleteLocalFiles([image_filtered_path]);
+              });
+          }
+        )
+        .catch(function(err){
+          res.status(400).send('REPORT ERROR =>' + err);
+        });
+      }
+  })
+
   
   // Root Endpoint
   // Displays a simple message to the user

@@ -1,0 +1,5 @@
+#Config Files
+config/*
+
+#AWS Config
+aws.ts
